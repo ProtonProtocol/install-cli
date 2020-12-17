@@ -260,27 +260,33 @@ if [ "${PLATFORM}" = win ]; then
   EXT=zip
 fi
 
-URL="${BASE_URL}/${RESOLVED}/node-${RESOLVED}-${PLATFORM}-${ARCH}.tar.gz"
-info "Tarball URL: ${UNDERLINE}${BLUE}${URL}${NO_COLOR}"
-check_prefix "${PREFIX}"
-info "Installing Node.js ${GREEN}${RESOLVED}${NO_COLOR} to ${BOLD}${GREEN}${PREFIX}${NO_COLOR}"
+if !command -v node &> /dev/null
+then
+  URL="${BASE_URL}/${RESOLVED}/node-${RESOLVED}-${PLATFORM}-${ARCH}.tar.gz"
+  info "Tarball URL: ${UNDERLINE}${BLUE}${URL}${NO_COLOR}"
+  check_prefix "${PREFIX}"
+  info "Installing Node.js ${GREEN}${RESOLVED}${NO_COLOR} to ${BOLD}${GREEN}${PREFIX}${NO_COLOR}"
 
-if [ "${EXT}" = zip ]; then
-  fetch "${URL}" \
-    | tar xzf${VERBOSE} - \
-      --exclude CHANGELOG.md \
-      --exclude LICENSE \
-      --exclude README.md \
-      --strip-components 1 \
-      -C "${PREFIX}"
-else
-  fetch "${URL}" \
-    | tar xzf${VERBOSE} - \
-      --exclude CHANGELOG.md \
-      --exclude LICENSE \
-      --exclude README.md \
-      --strip-components 1 \
-      -C "${PREFIX}"
+  if [ "${EXT}" = zip ]; then
+    fetch "${URL}" \
+      | tar xzf${VERBOSE} - \
+        --exclude CHANGELOG.md \
+        --exclude LICENSE \
+        --exclude README.md \
+        --strip-components 1 \
+        -C "${PREFIX}"
+  else
+    fetch "${URL}" \
+      | tar xzf${VERBOSE} - \
+        --exclude CHANGELOG.md \
+        --exclude LICENSE \
+        --exclude README.md \
+        --strip-components 1 \
+        -C "${PREFIX}"
+  fi
 fi
+
+info "Installing proton CLI"
+npm i -g @protonprotocol/cli
 
 complete "Done"
